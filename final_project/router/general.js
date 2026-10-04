@@ -59,17 +59,11 @@ public_users.post("/register", (req, res) => {
     return res.status(400).json({ message: "Username and password are required" });
   }
 
-  // Reload latest users from JSON file
-  const currentUsers = loadUsers();
-
-  const userExists = currentUsers.some(u => u.username === username);
-  if (userExists) {
+  if (isValid(username)) {
     return res.status(409).json({ message: "User already exists!" });
   }
 
-  currentUsers.push({ username, password });
-  saveUsers(currentUsers);
-
+  users.push({ username, password });
   return res.status(200).json({ message: "User successfully registered. Now you can login" });
 });
 

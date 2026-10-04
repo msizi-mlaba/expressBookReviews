@@ -1,0 +1,1 @@
+curl -X PUT "http://localhost:5000/customer/auth/review/1?review=Great%20book" -b cookies.txt

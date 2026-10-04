@@ -4,6 +4,52 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+// Helper Promise wrappers demonstrating asynchronous execution
+const getAllBooksPromise = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      resolve(books);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+const getBookByISBNPromise = (isbn) => {
+  return new Promise((resolve, reject) => {
+    if (books[isbn]) {
+      resolve(books[isbn]);
+    } else {
+      reject(new Error(`Book with ISBN ${isbn} not found`));
+    }
+  });
+};
+
+const getBooksByAuthorPromise = (author) => {
+  return new Promise((resolve) => {
+    const authorQuery = author.toLowerCase().trim();
+    const matching = {};
+    for (const [isbn, book] of Object.entries(books)) {
+      if (book.author.toLowerCase().includes(authorQuery)) {
+        matching[isbn] = book;
+      }
+    }
+    resolve(matching);
+  });
+};
+
+const getBooksByTitlePromise = (title) => {
+  return new Promise((resolve) => {
+    const titleQuery = title.toLowerCase().trim();
+    const matching = {};
+    for (const [isbn, book] of Object.entries(books)) {
+      if (book.title.toLowerCase().includes(titleQuery)) {
+        matching[isbn] = book;
+      }
+    }
+    resolve(matching);
+  });
+};
 
 // Register a new user
 public_users.post("/register", (req, res) => {
@@ -92,3 +138,7 @@ public_users.get('/review/:isbn', function (req, res) {
 });
 
 module.exports.general = public_users;
+module.exports.getAllBooksPromise = getAllBooksPromise;
+module.exports.getBookByISBNPromise = getBookByISBNPromise;
+module.exports.getBooksByAuthorPromise = getBooksByAuthorPromise;
+module.exports.getBooksByTitlePromise = getBooksByTitlePromise;
